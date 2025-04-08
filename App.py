@@ -1,146 +1,64 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
-# # Pagina-instellingen
-# st.set_page_config(page_title="Snoepprijzen Dashboard", layout="centered")
+# Stel de pagina-instellingen in
+st.set_page_config(page_title="Verkoop Dashboard", layout="wide")
 
-# # 🎨 Donkere achtergrond + zachte tekstkleur via CSS
-# st.markdown("""
-#     <style>
-#         body {
-#             background-color: #1e1e1e;
-#             color: #ffc4de;
-#         }
-#         .stApp {
-#             background-color: #1e1e1e;
-#         }
-#         .css-18e3th9, .css-1d391kg {
-#             background-color: #2e2e2e;
-#             color: #ffc4de;
-#         }
-#         label, .stSelectbox, .stMarkdown, .stText {
-#             color: #ffc4de !important;
-#         }
-#     </style>
-# """, unsafe_allow_html=True)
+# Lees het CSV-bestand in
+df = pd.read_csv('exclusieve_schoenen_verkoop_met_locatie.csv')
 
-# # Titel
-# st.markdown("<h1 style='color: #ffc4de;'>📈 Prijstrends van Snoepsoorten in 2024</h1>", unsafe_allow_html=True)
+# Zet de maand om naar datetime formaat (zorg ervoor dat de kolom "Maand" in de juiste indeling is)
+df['Maand'] = pd.to_datetime(df['Maand'], format='%Y-%m')
 
-# # Snoepsoorten
-# snoepsoorten = ["Gummy Bears", "Chocolade Repen", "Drop"]
+# Maak een mooie titel voor de pagina
+st.markdown(
+    """
+    <h1 style='text-align: center; color: #F5F5DC;'>Verkoop Analyse Dashboard 2024</h1>
+    """, unsafe_allow_html=True)
 
-# # Nederlandse maandafkortingen
-# maanden = ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
-
-# # Genereer random prijsdata
-# np.random.seed(42)
-# data = []
-# for snoep in snoepsoorten:
-#     prijzen = np.round(np.random.uniform(0.5, 2.5, size=12), 2)
-#     for maand, prijs in zip(maanden, prijzen):
-#         data.append({"Snoepsoort": snoep, "Maand": maand, "Prijs (€)": prijs})
-
-# df = pd.DataFrame(data)
-
-# # Filter
-# gekozen_snoep = st.selectbox("Selecteer een snoepsoort om te bekijken:", snoepsoorten)
-
-# # Filter de dataframe
-# filtered_df = df[df["Snoepsoort"] == gekozen_snoep]
-
-# # Lijngrafiek
-# fig, ax = plt.subplots(figsize=(12.8, 7.2))  # 1280x720 pixels
-# fig.patch.set_facecolor('#1e1e1e')
-# ax.set_facecolor('#2e2e2e')
-
-# lijnkleur = '#ff69b4'
-# tekstkleur = '#ffc4de'
-
-# ax.plot(filtered_df["Maand"], filtered_df["Prijs (€)"], marker='o', color=lijnkleur, linewidth=2.5)
-# ax.set_title(f"Prijsontwikkeling van {gekozen_snoep} in 2024", color=tekstkleur, fontsize=16)
-# ax.set_xlabel("Maand", color=tekstkleur)
-# ax.set_ylabel("Prijs (€)", color=tekstkleur)
-# ax.tick_params(axis='x', colors=tekstkleur, rotation=45)
-# ax.tick_params(axis='y', colors=tekstkleur)
-# for spine in ax.spines.values():
-#     spine.set_color(tekstkleur)
-
-# st.pyplot(fig)
-
-
-# Pagina-instellingen
-st.set_page_config(page_title="Schoenenverkoop Dashboard", layout="centered")
-
-# 🎨 Donkere stijl met zachte accentkleur
-st.markdown("""
+# Zet de pagina op met een donkergrijze achtergrond en creme kleurige tekst
+st.markdown(
+    """
     <style>
-        body {
-            background-color: #1e1e1e;
-            color: #ffc4de;
-        }
-        .stApp {
-            background-color: #1e1e1e;
-        }
-        .css-18e3th9, .css-1d391kg {
-            background-color: #2e2e2e;
-            color: #ffc4de;
-        }
-        label, .stSelectbox, .stMarkdown, .stText {
-            color: #ffc4de !important;
-        }
+    body {
+        background-color: #2f2f2f;
+        color: #F5F5DC;
+    }
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# Titel
-st.markdown("<h1 style='color: #ffc4de;'>👟 Verkoop van Schoenen per locatie in 2024</h1>", unsafe_allow_html=True)
+# Multiselect om op locaties te filteren
+locaties = df['Locatie'].unique()
+selected_locaties = st.multiselect('Selecteer Locaties:', locaties, default=locaties)
 
-# CSV Upload
-uploaded_file = st.file_uploader("Upload hier je CSV-bestand met verkoopdata", type=["csv"])
+# Filter de data op de geselecteerde locaties
+filtered_df = df[df['Locatie'].isin(selected_locaties)]
 
-if uploaded_file is not None:
-    try:
-        df = pd.read_csv(uploaded_file)
+# Lijn grafiek voor verkopen per merk over de maanden
+fig, ax = plt.subplots(figsize=(12, 6))
 
-        # Vereiste kolommen checken
-        vereiste_kolommen = {"Locatie", "Maand", "Verkoop"}
-        if not vereiste_kolommen.issubset(df.columns):
-            st.error("❌ De CSV moet deze kolommen bevatten: 'Locatie', 'Maand', 'Verkoop'")
-        else:
-            locaties = df["Locatie"].unique()
-            gekozen_locatie = st.selectbox("Selecteer een locatie om te bekijken:", locaties)
+# Groepeer de data per merk en maand
+df_grouped = filtered_df.groupby(['Maand', 'Merk'])['Verkoop'].sum().reset_index()
 
-            # Filteren op locatie
-            filtered_df = df[df["Locatie"] == gekozen_locatie]
+# Maak de lijnen voor elk merk met pastelkleuren
+merken = df_grouped['Merk'].unique()
 
-            # Zorg dat maanden in goede volgorde staan
-            maand_volgorde = ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", 
-                              "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
-            filtered_df["Maand"] = pd.Categorical(filtered_df["Maand"], categories=maand_volgorde, ordered=True)
-            filtered_df = filtered_df.sort_values("Maand")
+# Pas pastelkleuren toe op de lijnen
+colors = plt.cm.Pastel1.colors  # Je kunt hier andere pastelpaletten gebruiken
 
-            # Grafiek
-            fig, ax = plt.subplots(figsize=(12.8, 7.2))
-            fig.patch.set_facecolor('#1e1e1e')
-            ax.set_facecolor('#2e2e2e')
+for i, merk in enumerate(merken):
+    merk_data = df_grouped[df_grouped['Merk'] == merk]
+    ax.plot(merk_data['Maand'], merk_data['Verkoop'], label=merk, color=colors[i % len(colors)])
 
-            lijnkleur = '#ff69b4'
-            tekstkleur = '#ffc4de'
+# Zet de titel en labels
+ax.set_title('Verkopen per Merk Over de Maanden in 2024', fontsize=14)
+ax.set_xlabel('Maanden', fontsize=12)
+ax.set_ylabel('Verkoop', fontsize=12)
 
-            ax.plot(filtered_df["Maand"], filtered_df["Verkoop"], marker='o', color=lijnkleur, linewidth=2.5)
-            ax.set_title(f"Verkoopcijfers in {gekozen_locatie} (2024)", color=tekstkleur, fontsize=16)
-            ax.set_xlabel("Maand", color=tekstkleur)
-            ax.set_ylabel("Aantal verkochte schoenen", color=tekstkleur)
-            ax.tick_params(axis='x', colors=tekstkleur, rotation=45)
-            ax.tick_params(axis='y', colors=tekstkleur)
-            for spine in ax.spines.values():
-                spine.set_color(tekstkleur)
+# Draai de x-as labels om ze beter leesbaar te maken
+plt.xticks(rotation=45)
+ax.legend(title='Merken')
 
-            st.pyplot(fig)
-
-    except Exception as e:
-        st.error(f"⚠️ Er ging iets mis met het inlezen van de CSV: {e}")
-else:
-    st.info("⬆️ Upload een CSV-bestand met kolommen: 'Locatie', 'Maand', 'Verkoop'.")
+# Toon de grafiek in Streamlit
+st.pyplot(fig)
