@@ -9,7 +9,7 @@ st.set_page_config(page_title="Verkoop Dashboard", layout="wide")
 df = pd.read_csv('exclusieve_schoenen_verkoop_met_locatie.csv')
 
 # Zet de maand om naar datetime formaat (zorg ervoor dat de kolom "Maand" in de juiste indeling is)
-df['Maand'] = pd.to_datetime(df['maand'], format='%Y-%m')
+df['maand'] = pd.to_datetime(df['aankoopdatum'], format='%Y-%m')
 
 # Maak een mooie titel voor de pagina
 st.markdown(
