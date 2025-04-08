@@ -77,8 +77,17 @@ df = pd.read_csv('exclusieve_schoenen_verkoop_met_locatie.csv')
 # Controleer de kolomnamen
 st.write(df.columns)
 
-# Zet de 'Datum' kolom om naar datetime (pas de naam van de kolom aan indien nodig)
-df['Datum'] = pd.to_datetime(df['aankoopdatum'], format='ISO8601')  # Pas het formaat aan indien nodig
+# Zet de 'aankoopdatum' kolom om naar datetime (indien nog niet gebeurd)
+df['aankoopdatum'] = pd.to_datetime(df['aankoopdatum'], errors='coerce')
+
+# Controleer of de conversie goed is uitgevoerd
+st.write(df['aankoopdatum'].head())  # Dit toont de eerste paar rijen van de 'aankoopdatum' kolom
+
+# Extraheer de maand en het jaar uit de 'aankoopdatum' kolom
+df['Maand'] = df['aankoopdatum'].dt.to_period('M')  # Maand en jaar als Period (bijvoorbeeld: 2024-01)
+
+# # Zet de 'Datum' kolom om naar datetime (pas de naam van de kolom aan indien nodig)
+# df['Datum'] = pd.to_datetime(df['aankoopdatum'], format='ISO8601')  # Pas het formaat aan indien nodig
 
 # Extraheer de maand en het jaar uit de 'Datum' kolom
 df['Maand'] = df['aankoopdatum'].dt.to_period('M')  # Maand en jaar als Period (bijvoorbeeld: 2024-01)
