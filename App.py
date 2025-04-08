@@ -141,5 +141,11 @@ ax.set_ylabel('Verkoop', fontsize=12)
 plt.xticks(rotation=45)
 ax.legend(title='Merken')
 
+# Maak de achtergrond van de figuur transparant
+fig.patch.set_alpha(0.0)  # Maak de achtergrond transparant (0 is volledig transparant)
+
+# Maak de achtergrond van de assen ook transparant
+ax.set_facecolor('none')  # Dit maakt de achtergrond van de assen transparant
+
 # Toon de grafiek in Streamlit
 st.pyplot(fig)
