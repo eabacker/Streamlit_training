@@ -141,11 +141,18 @@ ax.set_ylabel('Verkoop', fontsize=12)
 plt.xticks(rotation=45)
 ax.legend(title='Merken')
 
-# Maak de achtergrond van de figuur transparant
-fig.patch.set_alpha(0.0)  # Maak de achtergrond transparant (0 is volledig transparant)
+# Maak de achtergrond van de figuur donkergrijs
+fig.patch.set_facecolor('#2f2f2f')  # Donkergrijze achtergrond voor de figuur
 
-# Maak de achtergrond van de assen ook transparant
-ax.set_facecolor('none')  # Dit maakt de achtergrond van de assen transparant
+# Maak de achtergrond van de assen ook donkergrijs
+ax.set_facecolor('#2f2f2f')  # Donkergrijze achtergrond voor de assen
+
+# Zet de kleur van de labels en tekst in de grafiek in een lichte kleur (om leesbaarheid te verbeteren)
+ax.title.set_color('#F5F5DC')  # Lichte kleur voor de titel
+ax.xaxis.label.set_color('#F5F5DC')  # Lichte kleur voor de x-as label
+ax.yaxis.label.set_color('#F5F5DC')  # Lichte kleur voor de y-as label
+ax.tick_params(axis='x', colors='#F5F5DC')  # Lichte kleur voor de x-as ticks
+ax.tick_params(axis='y', colors='#F5F5DC')  # Lichte kleur voor de y-as ticks
 
 # Toon de grafiek in Streamlit
 st.pyplot(fig)
