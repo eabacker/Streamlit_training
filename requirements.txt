@@ -4,5 +4,4 @@ numpy
 faker
 openpyxl
 xlsxwriter
-google.genai
-matplotlib.pyplot
+matplotlib
