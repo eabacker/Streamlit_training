@@ -33,23 +33,23 @@ locaties = df['Locatie'].unique()
 selected_locaties = st.multiselect('Selecteer Locaties:', locaties, default=locaties)
 
 # Filter de data op de geselecteerde locaties
-filtered_df = df[df['Locatie'].isin(selected_locaties)]
+filtered_df = df[df['land'].isin(selected_locaties)]
 
 # Lijn grafiek voor verkopen per merk over de maanden
 fig, ax = plt.subplots(figsize=(12, 6))
 
 # Groepeer de data per merk en maand
-df_grouped = filtered_df.groupby(['Maand', 'Merk'])['Verkoop'].sum().reset_index()
+df_grouped = filtered_df.groupby(['maand', 'merk'])['verkoop'].sum().reset_index()
 
 # Maak de lijnen voor elk merk met pastelkleuren
-merken = df_grouped['Merk'].unique()
+merken = df_grouped['merk'].unique()
 
 # Pas pastelkleuren toe op de lijnen
 colors = plt.cm.Pastel1.colors  # Je kunt hier andere pastelpaletten gebruiken
 
 for i, merk in enumerate(merken):
-    merk_data = df_grouped[df_grouped['Merk'] == merk]
-    ax.plot(merk_data['Maand'], merk_data['Verkoop'], label=merk, color=colors[i % len(colors)])
+    merk_data = df_grouped[df_grouped['merk'] == merk]
+    ax.plot(merk_data['maand'], merk_data['verkoop'], label=merk, color=colors[i % len(colors)])
 
 # Zet de titel en labels
 ax.set_title('Verkopen per Merk Over de Maanden in 2024', fontsize=14)
