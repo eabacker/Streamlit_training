@@ -120,16 +120,16 @@ filtered_df = df[df['land'].isin(selected_landen)]  # Pas hier 'Land' aan naar j
 fig, ax = plt.subplots(figsize=(12, 6))
 
 # Groepeer de data per merk en maand
-df_grouped = filtered_df.groupby(['Maand', 'Merk'])['totaal_bedrag'].sum().reset_index()
+df_grouped = filtered_df.groupby(['Maand', 'merk'])['totaal_bedrag'].sum().reset_index()
 
 # Maak de lijnen voor elk merk met pastelkleuren
-merken = df_grouped['Merk'].unique()
+merken = df_grouped['merk'].unique()
 
 # Pas pastelkleuren toe op de lijnen
 colors = plt.cm.Pastel1.colors  # Je kunt hier andere pastelpaletten gebruiken
 
 for i, merk in enumerate(merken):
-    merk_data = df_grouped[df_grouped['Merk'] == merk]
+    merk_data = df_grouped[df_grouped['merk'] == merk]
     ax.plot(merk_data['Maand'].astype(str), merk_data['totaal_bedrag'], label=merk, color=colors[i % len(colors)])
 
 # Zet de titel en labels
