@@ -29,7 +29,7 @@ st.markdown(
     """, unsafe_allow_html=True)
 
 # Multiselect om op locaties te filteren
-locaties = df['Locatie'].unique()
+locaties = df['land'].unique()
 selected_locaties = st.multiselect('Selecteer Locaties:', locaties, default=locaties)
 
 # Filter de data op de geselecteerde locaties
