@@ -39,7 +39,7 @@ filtered_df = df[df['land'].isin(selected_locaties)]
 fig, ax = plt.subplots(figsize=(12, 6))
 
 # Groepeer de data per merk en maand
-df_grouped = filtered_df.groupby(['maand', 'merk'])['verkoop'].sum().reset_index()
+df_grouped = filtered_df.groupby(['maand', 'merk'])['totaal_bedrag'].sum().reset_index()
 
 # Maak de lijnen voor elk merk met pastelkleuren
 merken = df_grouped['merk'].unique()
@@ -49,7 +49,7 @@ colors = plt.cm.Pastel1.colors  # Je kunt hier andere pastelpaletten gebruiken
 
 for i, merk in enumerate(merken):
     merk_data = df_grouped[df_grouped['merk'] == merk]
-    ax.plot(merk_data['maand'], merk_data['verkoop'], label=merk, color=colors[i % len(colors)])
+    ax.plot(merk_data['maand'], merk_data['totaal_bedrag'], label=merk, color=colors[i % len(colors)])
 
 # Zet de titel en labels
 ax.set_title('Verkopen per Merk Over de Maanden in 2024', fontsize=14)
