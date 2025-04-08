@@ -74,14 +74,14 @@ st.set_page_config(page_title="Verkoop Dashboard", layout="wide")
 # Lees het CSV-bestand in
 df = pd.read_csv('exclusieve_schoenen_verkoop_met_locatie.csv')
 
-# Controleer de kolomnamen
-st.write(df.columns)
+# # Controleer de kolomnamen
+# st.write(df.columns)
 
 # Zet de 'aankoopdatum' kolom om naar datetime (indien nog niet gebeurd)
 df['aankoopdatum'] = pd.to_datetime(df['aankoopdatum'], errors='coerce')
 
-# Controleer of de conversie goed is uitgevoerd
-st.write(df['aankoopdatum'].head())  # Dit toont de eerste paar rijen van de 'aankoopdatum' kolom
+# # Controleer of de conversie goed is uitgevoerd
+# st.write(df['aankoopdatum'].head())  # Dit toont de eerste paar rijen van de 'aankoopdatum' kolom
 
 # Extraheer de maand en het jaar uit de 'aankoopdatum' kolom
 df['Maand'] = df['aankoopdatum'].dt.to_period('M')  # Maand en jaar als Period (bijvoorbeeld: 2024-01)
